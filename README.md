@@ -143,11 +143,11 @@ Usually operation systems perform freeing resources that were managed by the fin
 
 ## Authors
 
-* **Victor Yastrebov** - *Initial work* - [github](https://github.com/victor.yastrebov)
+* **Victor Yastrebov** - *Initial work* - [github](https://github.com/victor-yastrebov/clog4all)
 
 ## License
 
-This project is licensed under the BSD2 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the BSD2 License - see the [LICENSE](LICENSE.md) file for details
 
 ## Acknowledgments
 
