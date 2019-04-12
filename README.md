@@ -147,7 +147,7 @@ Usually operation systems perform freeing resources that were managed by the fin
 
 ## License
 
-This project is licensed under the BSD2 License - see the [LICENSE](LICENSE.md) file for details
+This project is licensed under the BSD2 License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
