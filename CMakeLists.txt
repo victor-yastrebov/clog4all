@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 # set this option to OFF in order not to generate test project
 option(gen_test_project "Build all tests." ON)
 
-project(LoggerImpl)
+project(CLog4All)
 
 # variables are modified inside child
 # CMakeLists.txt using PARENT_SCOPE qualifier
@@ -47,7 +47,7 @@ add_executable(${PROJECT_NAME}
 )
 
 if(gen_test_project)
-    set(PROJECT LoggerImplTest)
+    set(PROJECT CLog4AllTest)
     project (${PROJECT})
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests ${CMAKE_BINARY_DIR}/LoggerImplTest)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests ${CMAKE_BINARY_DIR}/CLog4AllTest)
 endif()

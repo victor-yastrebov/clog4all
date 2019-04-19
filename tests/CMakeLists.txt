@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
-project(LoggerImplTest)
+project(CLog4AllTest)
 
 set(gtest_disable_pthreads on)
 
 # Add sub-directory that contains 'project(gtest)'.
-add_subdirectory(${PROJECT_SOURCE_DIR}/3dparty/google_test/ ${CMAKE_BINARY_DIR}/LoggerImplTest/google_test/)
+add_subdirectory(${PROJECT_SOURCE_DIR}/3dparty/google_test/ ${CMAKE_BINARY_DIR}/CLog4AllTest/google_test/)
 config_compiler_and_linker()
 
 set(headers_test "")
@@ -34,7 +34,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/unitTests/)
 ###################################
 # Source code of production classes
 ###################################
-set(PRODUCTION_BIN_PARENT_DIR "${CMAKE_BINARY_DIR}/LoggerImplTest/ProductionBin/")
+set(PRODUCTION_BIN_PARENT_DIR "${CMAKE_BINARY_DIR}/CLog4AllTest/ProductionBin/")
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -std=gnu++0x -lpthread")
