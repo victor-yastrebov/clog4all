@@ -19,6 +19,12 @@ set(directories_mingw "")
 set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=gnu++0x")
 
+if(WIN32)
+   # Some insurance in order to distribute application that is compiled using g++.
+   # These libraries can not present on target machine, so we use static linkage
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+endif()
+
 message("flags are: " ${CMAKE_CXX_FLAGS})
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/logger/)
