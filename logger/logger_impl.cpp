@@ -120,8 +120,9 @@ std::string LoggerImpl::AddProcessAndThreadInfo() const
 #else
       .append( std::to_string( pidCurrentProcess ) )
 #endif
+      .append( ", " )
       .append( ss.str() )
-      .append( "]" );
+      .append( "] " );
 }
 
 /**
