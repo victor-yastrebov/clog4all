@@ -96,7 +96,7 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
       return;
    }
 
-   logger << AddProcessInfo();
+   logger << AddProcessAndThreadInfo();
    logger << FormatData( e_level, loc_str );
    logger << p_msg << std::endl;
 
@@ -106,22 +106,22 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
 }
 
 /**
- * Add information about process from which the logger was called
+ * Add information about process and thread from which the logger was called
  */
-std::string LoggerImpl::AddProcessInfo() const
+std::string LoggerImpl::AddProcessAndThreadInfo() const
 {
    std::stringstream ss;
-   ss << "[";
+   ss << std::this_thread::get_id();
 
+   return std::string()
+      .append( "[" )
 #ifdef WIN32
-   ss << dwCurrentProcess;
+      .append( std::to_string( dwCurrentProcess ) )
 #else
-   ss << pidCurrentProcess;
+      .append( std::to_string( pidCurrentProcess ) )
 #endif
-
-   ss << ", " << std::this_thread::get_id() <<  "] ";
-
-   return ss.str();
+      .append( ss.str() )
+      .append( "]" );
 }
 
 /**
@@ -177,12 +177,15 @@ std::string LoggerImpl::FormatData( const eLogLevel e_level, const std::string &
    const std::string s_fname_with_line_no =
       ExtractFileNameWithLineNo( s_loc_str );
 
-   std::stringstream ss;
-   ss << buf_date_time << " ";
-   ss << "<" << s_level_str << ">\t";
-   ss << "[" << s_fname_with_line_no << "]\t";
+   std::string s_data;
+   s_data.reserve( 100 );
 
-   return ss.str();
+   s_data
+      .append( buf_date_time )
+      .append( std::string( " <" ).append( s_level_str ).append( ">" ) )
+      .append( std::string( "[" ).append( s_fname_with_line_no ).append( "]\t" ) );
+
+   return s_data;
 }
 
 /**

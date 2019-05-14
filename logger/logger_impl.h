@@ -64,5 +64,5 @@ private:
 
     std::string   FormatData( const eLogLevel e_level, const std::string &s_loc_str ) const;
     std::string   ExtractFileNameWithLineNo( const std::string &s_full_path ) const;
-    std::string   AddProcessInfo() const;
+    std::string   AddProcessAndThreadInfo() const;
 };
