@@ -96,7 +96,7 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
       return;
    }
 
-   logger << AddProcessInfo();
+   logger << AddProcessAndThreadInfo();
    logger << FormatData( e_level, loc_str );
    logger << p_msg << std::endl;
 
@@ -106,9 +106,9 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
 }
 
 /**
- * Add information about process from which the logger was called
+ * Add information about process and thread from which the logger was called
  */
-std::string LoggerImpl::AddProcessInfo() const
+std::string LoggerImpl::AddProcessAndThreadInfo() const
 {
    std::stringstream ss;
    ss << "[";
