@@ -34,7 +34,8 @@ typedef enum
  */
 struct LoggerBase
 {
-        void   ( *DoLogFuncPtr )( const eLogLevel level, const char *loc_str, const char *str, ... );
+        void   ( *DoCLogFuncPtr )( const eLogLevel level, const char *loc_str, const char *p_str, ... );
+        void   ( *DoCppLogFuncPtr )( const eLogLevel level, const char *loc_str, const char *p_msg );
    eLogLevel   ( *DoGetVerboseLevelFuncPtr )();
 #ifdef UNIT_TEST_LOGGER_IMPL
  const char*   ( *DoGetLatestLogMsgFuncPtr )();
@@ -70,7 +71,7 @@ try \
  { \
     std::stringstream _ss; \
     _ss << msg; \
-    LoggerBaseInst()->DoLogFuncPtr( (level_param), RH_LOC_STR, _ss.str().c_str() ); \
+    LoggerBaseInst()->DoCppLogFuncPtr( (level_param), RH_LOC_STR, _ss.str().c_str() ); \
  } \
 } \
 catch( ... ) {}
@@ -78,7 +79,7 @@ catch( ... ) {}
 #define C_LOG_COMMON( level_param, ... ) \
 if( (level_param) >= LoggerBaseInst()->DoGetVerboseLevelFuncPtr() ) \
 { \
-   LoggerBaseInst()->DoLogFuncPtr( (level_param), RH_LOC_STR, __VA_ARGS__ ); \
+   LoggerBaseInst()->DoCLogFuncPtr( (level_param), RH_LOC_STR, __VA_ARGS__ ); \
 } \
 
 // }}
