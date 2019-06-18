@@ -47,13 +47,28 @@ int InitLoggerImpl( const char *p_fname_log_full, const eLogLevel log_level )
 }
 
 /**
- * @brief DoLog - log to file implementation
+ * @brief DoLog - log to file using CPP_INFO like syntax
+ * We do not want to use resources consuming vsnprintf function, so have two
+ * functions: one for CPP_INFO like syntax and another for C_INFO like syntax
+ *
  * @param e_level - logging level
  * @param loc_str - log string location(filename:string no)
  * @param format - first named argument of function with variable number of
  * arguments
  */
-void DoLog( const eLogLevel e_level, const char *loc_str, const char *format, ... )
+void DoCppLog( const eLogLevel e_level, const char *loc_str, const char *p_msg )
+{
+   LoggerImplInst()->DoLog( e_level, loc_str, p_msg );
+}
+
+/**
+ * @brief DoLog - log to file using C_INFO like syntax
+ * @param e_level - logging level
+ * @param loc_str - log string location(filename:string no)
+ * @param format - first named argument of function with variable number of
+ * arguments
+ */
+void DoCLog( const eLogLevel e_level, const char *loc_str, const char *format, ... )
 {
    const size_t buf_size = 1024;
    char buffer[buf_size];
@@ -100,7 +115,8 @@ LoggerBase* LoggerBaseInst()
    // we use designated initializer - for compatibility with C
    // Structs in C can not have any functions, including CTOR and DTOR
    {
-      &DoLog
+      &DoCLog
+    , &DoCppLog
     , &DoGetVerboseLevel
 #ifdef UNIT_TEST_LOGGER_IMPL
     , &DoGetLatestLogMsg

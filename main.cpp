@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
    InitLoggerImpl( "E://myLog.log", eLogLevel::llDEBUG );
 
     unsigned int thread_count = 4;
-    unsigned int howmany      = 100000; //1000000;
+    unsigned int howmany      = 1000000; //1000000;
     std::vector<std::thread> threads;
     auto start = system_clock::now();
 
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     {
         //Has to be customized for every logger
        //CPP_INFO( " Message + all required information, #" );
-       CPP_INFO( " Message + all required information, #" << i );
+       CPP_INFO( "Message + all required information, #" << i );
         // C_INFO( "Message + all required information, # %d", i );
     }
 #else

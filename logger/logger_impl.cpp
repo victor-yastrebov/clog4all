@@ -26,6 +26,7 @@
  */
 LoggerImpl::LoggerImpl() :
 
+   pLogFile( nullptr ),
 #ifdef _WIN32
    dwCurrentProcess( GetCurrentProcessId() )
 #else
@@ -40,10 +41,7 @@ LoggerImpl::LoggerImpl() :
  */
 LoggerImpl::~LoggerImpl()
 {
-   if( logger.is_open() )
-   {
-      logger.close();
-   }
+   fclose( pLogFile );
 }
 
 /**
@@ -60,9 +58,9 @@ bool LoggerImpl::SetParams( const std::string &s_fname, const eLogLevel log_leve
    llVerboseLevel = log_level;
 
    std::lock_guard<std::mutex> lg( mutWriteToLog );
-   logger.open( s_fname, std::ios_base::out | std::ios_base::app );
-   if( logger.fail() || logger.bad() ) return false;
-   logger.close();
+   pLogFile = fopen( s_fname.c_str(), "a+" );
+
+   if( nullptr == pLogFile ) return false;
 
    return true;
 }
@@ -85,23 +83,17 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
    sLastLogMsg.assign( p_msg );
    return;
 #else
-
    // several threads can try to write to the file simultaneously,
    // so prevent it
    std::lock_guard<std::mutex> lg( mutWriteToLog );
 
-   logger.open( sLogName, std::ios_base::out | std::ios_base::app );
-   if( logger.fail() || logger.bad() )
-   {
-      return;
-   }
+   std::string s( AddProcessAndThreadInfo() );
+   fwrite( s.c_str(), s.size(), 1, pLogFile );
 
-   logger << AddProcessAndThreadInfo();
-   logger << FormatData( e_level, loc_str );
-   logger << p_msg << std::endl;
+   s = FormatData( e_level, loc_str );
+   fwrite( s.c_str(), s.size(), 1, pLogFile );
 
-   logger.close();
-
+   fwrite( p_msg, strlen( p_msg ), 1, pLogFile );
 #endif // end of #ifdef UNIT_TEST_LOGGER_IMPL
 }
 
@@ -111,18 +103,17 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
 std::string LoggerImpl::AddProcessAndThreadInfo() const
 {
    std::stringstream ss;
-   ss << std::this_thread::get_id();
+   ss << "[";
 
-   return std::string()
-      .append( "[" )
 #ifdef WIN32
-      .append( std::to_string( dwCurrentProcess ) )
+   ss << dwCurrentProcess;
 #else
-      .append( std::to_string( pidCurrentProcess ) )
+   ss << pidCurrentProcess;
 #endif
-      .append( ", " )
-      .append( ss.str() )
-      .append( "] " );
+
+   ss << ", " << std::this_thread::get_id() <<  "] ";
+
+   return ss.str();
 }
 
 /**
@@ -178,15 +169,12 @@ std::string LoggerImpl::FormatData( const eLogLevel e_level, const std::string &
    const std::string s_fname_with_line_no =
       ExtractFileNameWithLineNo( s_loc_str );
 
-   std::string s_data;
-   s_data.reserve( 100 );
+   std::stringstream ss;
+   ss << buf_date_time << " ";
+   ss << "<" << s_level_str << ">\t";
+   ss << "[" << s_fname_with_line_no << "]\t";
 
-   s_data
-      .append( buf_date_time )
-      .append( std::string( " <" ).append( s_level_str ).append( ">" ) )
-      .append( std::string( "[" ).append( s_fname_with_line_no ).append( "]\t" ) );
-
-   return s_data;
+   return ss.str();
 }
 
 /**
