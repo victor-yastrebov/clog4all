@@ -26,6 +26,7 @@
  */
 LoggerImpl::LoggerImpl() :
 
+   pLogFile( nullptr ),
 #ifdef _WIN32
    dwCurrentProcess( GetCurrentProcessId() )
 #else
@@ -40,10 +41,7 @@ LoggerImpl::LoggerImpl() :
  */
 LoggerImpl::~LoggerImpl()
 {
-   if( logger.is_open() )
-   {
-      logger.close();
-   }
+   fclose( pLogFile );
 }
 
 /**
@@ -60,9 +58,9 @@ bool LoggerImpl::SetParams( const std::string &s_fname, const eLogLevel log_leve
    llVerboseLevel = log_level;
 
    std::lock_guard<std::mutex> lg( mutWriteToLog );
-   logger.open( s_fname, std::ios_base::out | std::ios_base::app );
-   if( logger.fail() || logger.bad() ) return false;
-   logger.close();
+   pLogFile = fopen( s_fname.c_str(), "a+" );
+
+   if( nullptr == pLogFile ) return false;
 
    return true;
 }
@@ -85,22 +83,19 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
    sLastLogMsg.assign( p_msg );
    return;
 #else
-
    // several threads can try to write to the file simultaneously,
    // so prevent it
    std::lock_guard<std::mutex> lg( mutWriteToLog );
 
-   logger.open( sLogName, std::ios_base::out | std::ios_base::app );
-   if( logger.fail() || logger.bad() )
-   {
-      return;
-   }
+   std::string s( AddProcessAndThreadInfo() );
+   if( pLogFile ) fwrite( s.c_str(), s.size(), 1, pLogFile );
 
-   logger << AddProcessAndThreadInfo();
-   logger << FormatData( e_level, loc_str );
-   logger << p_msg << std::endl;
+   s.assign( FormatData( e_level, loc_str ) );
+   if( pLogFile ) fwrite( s.c_str(), s.size(), 1, pLogFile );
 
-   logger.close();
+   s.assign( p_msg, strlen( p_msg ) );
+   s.push_back( '\n' );
+   if( pLogFile ) fwrite( s.c_str(), s.size(), 1, pLogFile );
 
 #endif // end of #ifdef UNIT_TEST_LOGGER_IMPL
 }

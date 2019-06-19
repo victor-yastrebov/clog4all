@@ -48,7 +48,7 @@ public:
 
 private:
       std::mutex   mutWriteToLog;
-   std::ofstream   logger;
+            FILE  *pLogFile;
      std::string   sLogName;
        eLogLevel   llVerboseLevel;
 #ifdef _WIN32
