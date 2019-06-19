@@ -105,18 +105,21 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
  */
 std::string LoggerImpl::AddProcessAndThreadInfo() const
 {
-   std::stringstream ss;
-   ss << "[";
+   // reset previously used stringstream
+   stringStream.clear();
+   stringStream.str( std::string() );
+
+   stringStream << "[";
 
 #ifdef WIN32
-   ss << dwCurrentProcess;
+   stringStream << dwCurrentProcess;
 #else
-   ss << pidCurrentProcess;
+   stringStream << pidCurrentProcess;
 #endif
 
-   ss << ", " << std::this_thread::get_id() <<  "] ";
+   stringStream << ", " << std::this_thread::get_id() <<  "] ";
 
-   return ss.str();
+   return stringStream.str();
 }
 
 /**
@@ -172,12 +175,15 @@ std::string LoggerImpl::FormatData( const eLogLevel e_level, const std::string &
    const std::string s_fname_with_line_no =
       ExtractFileNameWithLineNo( s_loc_str );
 
-   std::stringstream ss;
-   ss << buf_date_time << " ";
-   ss << "<" << s_level_str << ">\t";
-   ss << "[" << s_fname_with_line_no << "]\t";
+   // reset previously used stringstream
+   stringStream.clear();
+   stringStream.str( std::string() );
 
-   return ss.str();
+   stringStream << buf_date_time << " ";
+   stringStream << "<" << s_level_str << ">\t";
+   stringStream << "[" << s_fname_with_line_no << "]\t";
+
+   return stringStream.str();
 }
 
 /**

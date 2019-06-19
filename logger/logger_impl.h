@@ -47,19 +47,20 @@ public:
 #endif
 
 private:
-      std::mutex   mutWriteToLog;
-            FILE  *pLogFile;
-     std::string   sLogName;
-       eLogLevel   llVerboseLevel;
+                  std::mutex   mutWriteToLog;
+                        FILE  *pLogFile;
+                 std::string   sLogName;
+                   eLogLevel   llVerboseLevel;
+   mutable std::stringstream   stringStream;
 #ifdef _WIN32
-     const DWORD   dwCurrentProcess;
+                 const DWORD   dwCurrentProcess;
 #else
-     const pid_t   pidCurrentProcess;
+                 const pid_t   pidCurrentProcess;
 #endif
 
 // Is used for unit-testing only
 #ifdef UNIT_TEST_LOGGER_IMPL
-    std::string   sLastLogMsg;
+                 std::string   sLastLogMsg;
 #endif
 
     std::string   FormatData( const eLogLevel e_level, const std::string &s_loc_str ) const;
