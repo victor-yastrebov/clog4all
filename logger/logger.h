@@ -71,7 +71,6 @@ try \
  { \
     std::stringstream _ss; \
     _ss << msg; \
-    _ss << "\n"; \
     LoggerBaseInst()->DoCppLogFuncPtr( (level_param), RH_LOC_STR, _ss.str().c_str() ); \
  } \
 } \

@@ -93,7 +93,10 @@ void LoggerImpl::DoLog( const eLogLevel e_level, const char *loc_str, const char
    s = FormatData( e_level, loc_str );
    fwrite( s.c_str(), s.size(), 1, pLogFile );
 
-   fwrite( p_msg, strlen( p_msg ), 1, pLogFile );
+   s.assign( p_msg, strlen( p_msg ) );
+   s.push_back( '\n' );
+   fwrite( s.c_str(), s.size(), 1, pLogFile );
+
 #endif // end of #ifdef UNIT_TEST_LOGGER_IMPL
 }
 

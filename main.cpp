@@ -4,7 +4,9 @@
 #include <vector>
 #include <iostream>
 
+#ifdef _WIN32
 #include "mingw.thread.h"
+#endif
 
 //Include specific logger headers
 #include"logger.h"
